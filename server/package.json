@@ -2,15 +2,21 @@
   "name": "feedeo-wonderwall",
   "version": "1.0.0",
   "description": "A framework for collecting images and showing them on client displays",
-  "main": "app/index.js",
+  "main": "bin/www.js",
   "scripts": {
-    "start": "node app/index.js",
+    "start": "node bin/www",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "bluebird": "^3.4.0",
+    "body-parser": "~1.15.2",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "ejs": "^2.5.5",
+    "express": "~4.14.0",
     "lodash": "^4.13.1",
     "moment": "^2.14.1",
+    "morgan": "~1.7.0",
     "rollbar": "^0.6.2",
     "winston": "^2.2.0"
   },
