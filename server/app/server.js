@@ -1,16 +1,15 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
 const { Logger } = require('./utils');
 const logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
-var query = require('./routes/query');
+const query = require('./routes/query');
 //var users = require('./routes/users');
 
 var app = express();
-
 
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');

@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const publisher = require('./publisher');
 
 const ImagesClient = require('google-images');
-const {Logger} = require('../utils')
+const {Logger} = require('../utils');
+const {cx} = require('../config');
 
 router.use(function (req, res, next) {
     console.log('Something is happening.');
@@ -15,7 +17,7 @@ router.post('/query', (req, res) => {
     const query = req.body.q;
     console.log("Body", req.body);
 
-    let client = new ImagesClient('014255597759783782513:qnxfarpo1tg', 'AIzaSyCphfV_HadM9KEMrkJOk4vK46EvHQsrf8w');
+    let client = new ImagesClient(cx.cx_id, cx.cx_api);
 
     client.search(query, {size: 'large'})
         .then((images) => {
@@ -30,12 +32,17 @@ router.get('/query/:q', (req, res) => {
 
     const query = req.params.q
 
-    let client = new ImagesClient('014255597759783782513:qnxfarpo1tg', 'AIzaSyCphfV_HadM9KEMrkJOk4vK46EvHQsrf8w');
+    let client = new ImagesClient(cx.cx_id, cx.cx_api);
 
     client.search(query, {size: 'large'})
         .then((images) => {
 
             for (let img of images) {
+                const tmp = {
+                    url: img.url,
+                    source: query
+                }
+                publisher.publish(tmp);
                 Logger.info(img.url)
             }
             res.json(images)
