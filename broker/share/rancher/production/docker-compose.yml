@@ -1,0 +1,41 @@
+rabbitmq:
+  environment:
+    CONFD_ARGS: --interval 5
+    RABBITMQ_CLUSTER_PARTITION_HANDLING: ignore
+    RABBITMQ_NET_TICKTIME: '60'
+  labels:
+    io.rancher.sidekicks: rabbitmq-base,rabbitmq-datavolume
+    io.rancher.container.hostname_override: container_name
+    io.rancher.scheduler.affinity:host_label: com.feedeo=feedeo-wonderwall
+  image: rdaneel/rabbitmq-conf:0.2.0
+  volumes_from:
+  - rabbitmq-datavolume
+  ports:
+    - "15672:15672"
+    - "5672:5672"
+    
+rabbitmq-base:
+  environment:
+    RABBITMQ_ERLANG_COOKIE: KOW5OQEFvEJfHR5YUKqa2yFYe0fupZ8A
+    RABBITMQ_DEFAULT_USER: "rabbitmq"
+    RABBITMQ_DEFAULT_PASS: "rabbitmq"
+    RABBITMQ_DEFAULT_VHOST: "/"
+  labels:
+    io.rancher.container.hostname_override: container_name
+  entrypoint:
+  - /opt/rancher/bin/run.sh
+  image: rabbitmq:3.6-management
+  volumes_from:
+  - rabbitmq-datavolume
+  net: container:rabbitmq
+  
+rabbitmq-datavolume:
+  labels:
+    io.rancher.container.start_once: 'true'
+    io.rancher.container.hostname_override: container_name
+  entrypoint:
+  - /bin/true
+  image: rabbitmq:3.6-management
+  volumes:
+  - /etc/rabbitmq
+  - /opt/rancher/bin

@@ -1,4 +1,4 @@
-rabbit1:
+rabbitmq:
   image: "rabbitmq:3-management"
   environment:
     RABBITMQ_ERLANG_COOKIE: "KOW5OQEFvEJfHR5YUKqa2yFYe0fupZ8A"
@@ -8,5 +8,3 @@ rabbit1:
   ports:
     - "15672:15672"
     - "5672:5672"
-  volumes:
-    - "./enabled_plugins:/etc/rabbitmq/enabled_plugins"
