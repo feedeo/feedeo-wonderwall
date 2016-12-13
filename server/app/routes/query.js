@@ -4,7 +4,7 @@ const publisher = require('./publisher');
 
 const ImagesClient = require('google-images');
 const {Logger} = require('../utils');
-const {cx} = require('../config');
+const {cx} = require('../../config');
 
 router.use(function (req, res, next) {
     console.log('Something is happening.');
@@ -37,14 +37,21 @@ router.get('/query/:q', (req, res) => {
     client.search(query, {size: 'large'})
         .then((images) => {
 
-            for (let img of images) {
-                const tmp = {
-                    url: img.url,
-                    source: query
-                }
-                publisher.publish(tmp);
-                Logger.info(img.url)
+            if (images.length > 0) {
+                publisher.purgeQueue(function (res) {
+                    Logger.info(`${res.messageCount} messages was purged.`)
+
+                    for (let img of images) {
+                        const tmp = {
+                            url: img.url,
+                            timeout: 15
+                        }
+
+                        publisher.publish(tmp);
+                    }
+                })
             }
+
             res.json(images)
         })
         .catch(error => Logger.warn(error))
