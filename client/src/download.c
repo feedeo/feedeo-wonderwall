@@ -5,14 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include "download.h"
+#include <stdio.h>
 
 #include <curl/curl.h>
+
+#include "download.h"
 
 int download_image(const char *url, const char *filename) {
     FILE *file;
     CURL *curl;
     CURLcode code;
+
+    fprintf(stdout, "Downloading %s\n", url);
 
     if (!(file = fopen(filename, "wb"))) {
         fprintf(stderr, "error: could not open temporary file\n");

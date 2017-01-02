@@ -5,20 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include "amqp.h"
-#include "download.h"
-#include "display.h"
-
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <jansson.h>
 
-
-#include <string.h>
-
-const int DEFAULT_DISPLAY_TIMEOUT = 10;
-char filename[FILENAME_MAX] = "/tmp/wonderwall.data";
+#include "../include/wonderwalld.h"
+#include "amqp.h"
+#include "download.h"
+#include "display.h"
 
 json_t *parse_json(const char *text) {
     json_t *root;
@@ -34,7 +30,6 @@ json_t *parse_json(const char *text) {
         return NULL;
     }
 }
-
 
 void handle_message(char *message) {
     json_t *json_message;
@@ -82,7 +77,6 @@ void handle_message(char *message) {
         }
     }
 
-    fprintf(stdout, "Displaying %s for %u sec\n", url, timeout);
     if (download_image(url, filename) < 0) {
         fprintf(stderr, "Failed to download URL: %s\n", url);
 
@@ -100,9 +94,7 @@ void handle_message(char *message) {
     remove(filename);
 }
 
-
-
-int main(int argc, char const *const *argv) {
+int main(int argc, char **argv) {
     char const *hostname;
     char const *username;
     char const *password;
@@ -113,7 +105,7 @@ int main(int argc, char const *const *argv) {
 
 
     if (argc < 6) {
-        fprintf(stderr, "Usage: wonderwalld host port username password\n");
+        fprintf(stderr, "Usage: wonderwalld host port username password queue\n");
         return 1;
     }
 
@@ -125,7 +117,7 @@ int main(int argc, char const *const *argv) {
     exchange = "amq.direct";
     bindingkey = "test queue";
 
-    connect(hostname, port, username, password, queue, exchange, bindingkey, handle_message);
+    connect_amqp(hostname, port, username, password, queue, exchange, bindingkey, handle_message);
 
     return 0;
 }

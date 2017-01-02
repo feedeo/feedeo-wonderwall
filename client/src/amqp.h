@@ -10,22 +10,16 @@
 
 #include <amqp_tcp_socket.h>
 
-void die(const char *fmt, ...);
+void listen_amqp(amqp_connection_state_t conn, void (*handle_message)(char *));
 
-void die_on_error(int x, char const *context);
-
-void die_on_amqp_error(amqp_rpc_reply_t x, char const *context);
-
-void connect(const char *hostname,
-             const int port,
-             const char *username,
-             const char *password,
-             const char *queue,
-             const char *exchange,
-             const char *bindingkey,
-             void (*handle_message)(char *)
+void connect_amqp(const char *hostname,
+                  const int port,
+                  const char *username,
+                  const char *password,
+                  const char *queue,
+                  const char *exchange,
+                  const char *bindingkey,
+                  void (*handle_message)(char *)
 );
-
-static void listen(amqp_connection_state_t conn, void (*handle_message)(char *));
 
 #endif //WONDERWALLD_AMQP_H

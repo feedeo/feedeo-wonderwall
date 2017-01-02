@@ -6,12 +6,13 @@
 * librabbitmq1
 * libcurl3
 * libjansson4
-* fib
+* libsdl1.2
+* libsdl-image1.2
 
 ### How to build (cross-compile)
 Note: Requires an ARM cross-compiler and a raspbian sysroot.
 ```
-mkdir -p build && \
+mkdir build && \
 cd build && \
 cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/platforms/rpi/toolchain/armv6-rpi1-linux-gnueabihf.cmake .. && \
 make

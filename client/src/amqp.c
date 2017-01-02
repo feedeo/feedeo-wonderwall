@@ -5,20 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <string.h>
-
 #include "amqp.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include <string.h>
+
 void die(const char *fmt, ...) {
-    va_list ap;
-    va_start(ap, fmt);
-    vfprintf(stderr, fmt, ap);
-    va_end(ap);
-    fprintf(stderr, "\n");
+    fprintf(stderr, "%s\n", fmt);
     exit(1);
 }
 
@@ -70,50 +66,7 @@ void die_on_amqp_error(amqp_rpc_reply_t x, char const *context) {
     exit(1);
 }
 
-void connect(const char *hostname,
-             const int port,
-             const char *username,
-             const char *password,
-             const char *queue,
-             const char *exchange,
-             const char *bindingkey,
-             void (*handle_message)(char *)
-) {
-    int status;
-    amqp_socket_t *socket = NULL;
-    amqp_connection_state_t conn;
-
-    conn = amqp_new_connection();
-
-    socket = amqp_tcp_socket_new(conn);
-    if (!socket) {
-        die("creating TCP socket");
-    }
-
-    status = amqp_socket_open(socket, hostname, port);
-    if (status) {
-        die("opening TCP socket");
-    }
-
-    die_on_amqp_error(amqp_login(conn, "/", 0, 131072, 0, AMQP_SASL_METHOD_PLAIN, username, password), "Logging in");
-    amqp_channel_open(conn, 1);
-    die_on_amqp_error(amqp_get_rpc_reply(conn), "Opening channel");
-
-    amqp_queue_bind(conn, 1, amqp_cstring_bytes(queue), amqp_cstring_bytes(exchange), amqp_cstring_bytes(bindingkey),
-                    amqp_empty_table);
-    die_on_amqp_error(amqp_get_rpc_reply(conn), "Binding queue");
-
-    amqp_basic_consume(conn, 1, amqp_cstring_bytes(queue), amqp_empty_bytes, 0, 1, 0, amqp_empty_table);
-    die_on_amqp_error(amqp_get_rpc_reply(conn), "Consuming");
-
-    listen(conn, handle_message);
-
-    die_on_amqp_error(amqp_channel_close(conn, 1, AMQP_REPLY_SUCCESS), "Closing channel");
-    die_on_amqp_error(amqp_connection_close(conn, AMQP_REPLY_SUCCESS), "Closing connection");
-    die_on_error(amqp_destroy_connection(conn), "Ending connection");
-}
-
-static void listen(amqp_connection_state_t conn, void (*handle_message)(char *)) {
+void listen_amqp(amqp_connection_state_t conn, void (*handle_message)(char *)) {
     amqp_frame_t frame;
     char *message = NULL;
 
@@ -143,13 +96,13 @@ static void listen(amqp_connection_state_t conn, void (*handle_message)(char *))
                              * this is what would be returned. The message then needs to be read.
                              */
                         {
-                            amqp_message_t message;
-                            ret = amqp_read_message(conn, frame.channel, &message, 0);
+                            amqp_message_t m;
+                            ret = amqp_read_message(conn, frame.channel, &m, 0);
                             if (AMQP_RESPONSE_NORMAL != ret.reply_type) {
                                 return;
                             }
 
-                            amqp_destroy_message(&message);
+                            amqp_destroy_message(&m);
                         }
 
                             break;
@@ -205,4 +158,47 @@ static void listen(amqp_connection_state_t conn, void (*handle_message)(char *))
             amqp_destroy_envelope(&envelope);
         }
     }
+}
+
+void connect_amqp(const char *hostname,
+                  const int port,
+                  const char *username,
+                  const char *password,
+                  const char *queue,
+                  const char *exchange,
+                  const char *bindingkey,
+                  void (*handle_message)(char *)
+) {
+    int status;
+    amqp_socket_t *socket = NULL;
+    amqp_connection_state_t conn;
+
+    conn = amqp_new_connection();
+
+    socket = amqp_tcp_socket_new(conn);
+    if (!socket) {
+        die("creating TCP socket");
+    }
+
+    status = amqp_socket_open(socket, hostname, port);
+    if (status) {
+        die("opening TCP socket");
+    }
+
+    die_on_amqp_error(amqp_login(conn, "/", 0, 131072, 0, AMQP_SASL_METHOD_PLAIN, username, password), "Logging in");
+    amqp_channel_open(conn, 1);
+    die_on_amqp_error(amqp_get_rpc_reply(conn), "Opening channel");
+
+    amqp_queue_bind(conn, 1, amqp_cstring_bytes(queue), amqp_cstring_bytes(exchange), amqp_cstring_bytes(bindingkey),
+                    amqp_empty_table);
+    die_on_amqp_error(amqp_get_rpc_reply(conn), "Binding queue");
+
+    amqp_basic_consume(conn, 1, amqp_cstring_bytes(queue), amqp_empty_bytes, 0, 1, 0, amqp_empty_table);
+    die_on_amqp_error(amqp_get_rpc_reply(conn), "Consuming");
+
+    listen_amqp(conn, handle_message);
+
+    die_on_amqp_error(amqp_channel_close(conn, 1, AMQP_REPLY_SUCCESS), "Closing channel");
+    die_on_amqp_error(amqp_connection_close(conn, AMQP_REPLY_SUCCESS), "Closing connection");
+    die_on_error(amqp_destroy_connection(conn), "Ending connection");
 }
