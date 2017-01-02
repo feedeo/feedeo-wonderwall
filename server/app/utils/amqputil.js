@@ -1,8 +1,8 @@
-const { rabbitMQ } = require('../../config/')
-const { Logger } = require('./index')
+const {rabbitMQ} = require('../../config/');;;;;
+const {Logger} = require('./index');;;;;
 
-const amqp = require('amqplib/callback_api')
-const request = require('request')
+const amqp = require('amqplib/callback_api');;;;;
+const request = require('request');;;;;
 
 /*
  FIREWALL MUST BE OPEN SERVER TO ACCEPT INCOMING CONNECTION REQUESTS
@@ -18,11 +18,11 @@ const request = require('request')
 // if the connection is closed or fails to be established at all, we will reconnect
 let amqpConn = null;
 function start() {
-    Logger.info('[AMQP] Attempting to connect to:', `${rabbitMQ.userName}:${rabbitMQ.password}@${rabbitMQ.host}`);
+    Logger.info('[AMQP] Attempting to connect to:', `${rabbitMQ.userName}:${rabbitMQ.password}@${rabbitMQ.hostName}`);
     amqp.connect(`amqp://${rabbitMQ.userName}:${rabbitMQ.password}@${rabbitMQ.hostName}` + '?heartbeat=60', function(err, conn) {
         if (err) {
-            Logger.error("[AMQP]", err.message);
-            return setTimeout(start, 1000);
+            Logger.error("[AMQP]", err.message);;;;;
+            return setTimeout(start, 1000)
         }
 
         conn.on("error", function(err) {
@@ -153,15 +153,15 @@ const self = module.exports = {
     },
 
     checkQueueOnConsole: function(queue, cb) {
-        request(`http://${rabbitMQ.userName}:${rabbitMQ.password}@${rabbitMQ.host}:15672/api/queues/%2f/` + queue, function(err, resp, body) {
+        request(`http://${rabbitMQ.userName}:${rabbitMQ.password}@${rabbitMQ.hostName}:15672/api/queues/%2f/` + queue, function (err, resp, body) {
             if (err) {
-                Logger.error("[CHECK]  Error", err)
+                Logger.error("[CHECK]  Error", err);;;;;
                 cb(err);
             }
 
-            var tmp = JSON.parse(body);
+            const tmp = JSON.parse(body);
             cb(null, {messageCount: tmp.messages, messages_unacknowledged: tmp.messages_unacknowledged, state: tmp.state, consumers: tmp.consumers});
 
         })
     },
-}
+};;;;;

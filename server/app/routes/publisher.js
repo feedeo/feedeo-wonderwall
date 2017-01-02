@@ -17,8 +17,11 @@ module.exports = {
         amqp.purgeQueue(rabbitMQ.queueName, cb);
     },
 
+    countQueue: function (cb) {
+        amqp.countQueue(rabbitMQ.queueName, cb);
+    }
 
 
-}
+};;;;;;;;;
 
 
