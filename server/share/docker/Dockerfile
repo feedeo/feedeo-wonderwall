@@ -1,4 +1,4 @@
-FROM node:slim
+FROM node:6-slim
 
 MAINTAINER hugo@feedeo.io
 
@@ -11,20 +11,19 @@ ARG FEEDEO_VERSION_BUILD_DATE
 ENV FEEDEO_VERSION_BUILD_DATE $FEEDEO_VERSION_BUILD_DATE
 
 # Create app directory
-RUN mkdir -p /opt/feedeo-ebba-service
-WORKDIR /opt/feedeo-ebba-service
+RUN mkdir -p /opt/wonderwall
+WORKDIR /opt/wonderwall
 
 # Install app dependencies
-COPY package.json /opt/feedeo-ebba-service
+COPY package.json /opt/wonderwall
 RUN npm install --production
 
 # Install NewRelic agent
-COPY share/newrelic/newrelic.js /opt/feedeo-ebba-service
+COPY share/newrelic/newrelic.js /opt/wonderwall
 
 # Bundle app source
-COPY src /opt/feedeo-ebba-service/src
-COPY locale /opt/feedeo-ebba-service/locale
-COPY share /opt/feedeo-ebba-service/share
+COPY src /opt/wonderwall/src
+COPY share /opt/wonderwall/share
 
 EXPOSE 3000
 CMD [ "npm", "start" ]

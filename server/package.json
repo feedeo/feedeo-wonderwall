@@ -4,8 +4,10 @@
   "description": "A framework for collecting images and showing them on client displays",
   "main": "bin/www.js",
   "scripts": {
-    "start": "node bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/app.js",
+    "build": "$(which docker) build -t registry.feedeo.io/$npm_package_name:$npm_package_version --build-arg=FEEDEO_VERSION=`$(which git) rev-parse --abbrev-ref HEAD` --build-arg=FEEDEO_VERSION_COMMIT=`$(which git) rev-parse --short HEAD` --build-arg=FEEDEO_VERSION_BUILD_DATE=\"`$(which date)`\" -f ./share/docker/Dockerfile .",
+    "push": "$(which docker) push registry.feedeo.io/$npm_package_name:$npm_package_version",
+    "test": "node_modules/.bin/eslint . && node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- --recursive test"
   },
   "dependencies": {
     "amqplib": "^0.5.1",
