@@ -2,7 +2,9 @@ server:
   image: registry.feedeo.io/feedeo-wonderwall:1.0.0
   restart: always
   ports:
-    - 80:2495
+    - 2495:2495
   environment:
     FEEDEO_ENVIRONMENT: production
     FEEDEO_LOG_LEVEL: debug
+  labels:
+    io.rancher.scheduler.affinity:host_label: com.feedeo=feedeo-wonderall
