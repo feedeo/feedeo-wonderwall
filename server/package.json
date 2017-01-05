@@ -21,6 +21,7 @@
     "lodash": "^4.13.1",
     "moment": "^2.14.1",
     "morgan": "~1.7.0",
+    "newrelic": "^1.28.3",
     "request": "^2.79.0",
     "rollbar": "^0.6.2",
     "serve-favicon": "^2.3.2",
