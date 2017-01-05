@@ -1,13 +1,17 @@
-#!/usr/bin/env node
-
+/*
+ * Copyright (c) 2017, Feedeo AB <hugo@feedeo.io>.
+ *
+ * This source code is licensed under the license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 /**
  * Module dependencies.
  */
 
-var app = require('../app/server');
+var app = require('./server');
 var debug = require('debug')('untitled1:server');
 var http = require('http');
-const { Logger } = require('../app/utils');
+const { Logger } = require('../src/utils');
 
 /**
  * Get port from environment and store in Express.

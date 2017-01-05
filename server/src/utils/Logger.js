@@ -1,5 +1,8 @@
 /*
- * Copyright (C) 2016, Feedeo AB. All rights reserved.
+ * Copyright (c) 2017, Feedeo AB <hugo@feedeo.io>.
+ *
+ * This source code is licensed under the license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 const ENVIRONMENT = process.env.FEEDEO_ENVIRONMENT || 'local';
@@ -16,8 +19,7 @@ const winston = require('winston');
 
 const timeFormat = function () {
 	return moment().format('YYYY-MM-DDTHH:mm:ss,SSSZ')
-};;;;;;;;;;;;;;
-
+};
 const transports = [];
 
 transports.push(new winston.transports.Console({
@@ -27,37 +29,32 @@ transports.push(new winston.transports.Console({
 	handleExceptions: true,
     timestamp: timeFormat,
 	humanReadableUnhandledException: true
-}));;;;;;;;;;;;;;
-
+}));
 switch (ENVIRONMENT) {
 	case 'development':
 	case 'production':
 
-        const rollbar = require('rollbar');;;;;;;;;;;;;;
-		rollbar.init(ROLLBAR_TOKEN, {
+    const rollbar = require('rollbar');
+    rollbar.init(ROLLBAR_TOKEN, {
 			environment: ENVIRONMENT,
 			branch: VERSION,
 			codeVersion: VERSION_COMMIT
-        });;;;;;;;;;;;;;
-
-		const RollbarLogger = function (options) {
-            this.name = 'rollbar';;;;;;;;;;;;;;
-            this.level = options && options.level || 'error';;;;;;;;;;;;;;
-            this.handleExceptions = true;;;;;;;;;;;;;;
-			this.humanReadableUnhandledException = true
-        };;;;;;;;;;;;;;
-
-        util.inherits(RollbarLogger, winston.Transport);;;;;;;;;;;;;;
-
-		RollbarLogger.prototype.log = function (level, msg, meta, callback) {
+    });
+    const RollbarLogger = function (options) {
+      this.name = 'rollbar';
+      this.level = options && options.level || 'error';
+      this.handleExceptions = true;
+      this.humanReadableUnhandledException = true
+    };
+    util.inherits(RollbarLogger, winston.Transport);
+    RollbarLogger.prototype.log = function (level, msg, meta, callback) {
 			if (level === 'error') {
-                let error;;;;;;;;;;;;;;
-                let payload = {level};;;;;;;;;;;;;;
-				if (msg !== '' && meta) {
-                    error = new Error();;;;;;;;;;;;;;
-                    error.stack = msg;;;;;;;;;;;;;;
-
-					if (msg.indexOf('\n') > -1) {
+        let error;
+        let payload = { level };
+        if (msg !== '' && meta) {
+          error = new Error();
+          error.stack = msg;
+          if (msg.indexOf('\n') > -1) {
 						error.message = msg.substring(7, msg.indexOf('\n'))
 					}
 
@@ -74,24 +71,19 @@ switch (ENVIRONMENT) {
 					}
 				})
 			}
-        };;;;;;;;;;;;;;
-
-        transports.push(new RollbarLogger());;;;;;;;;;;;;;
-
-        break;;;;;;;;;;;;;;
-
-	default:
+    };
+    transports.push(new RollbarLogger());
+    break;
+  default:
 }
 
 const Logger = new winston.Logger({
 	transports: transports,
 	exitOnError: false
-});;;;;;;;;;;;;;
-
-module.exports = Logger;;;;;;;;;;;;;;
-
+});
+module.exports = Logger;
 module.exports.stream = {
 	'write': function (message) {
 		Logger.info(message)
 	}
-};;;;;;;;;;;;;;
+};

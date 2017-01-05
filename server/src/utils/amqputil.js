@@ -1,9 +1,14 @@
-const {rabbitMQ} = require('../../config/');;;;;
-const {Logger} = require('./index');;;;;
+/*
+ * Copyright (c) 2017, Feedeo AB <hugo@feedeo.io>.
+ *
+ * This source code is licensed under the license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
-const amqp = require('amqplib/callback_api');;;;;
-const request = require('request');;;;;
-
+const { rabbitMQ } = require('../config/');
+const { Logger } = require('./index');
+const amqp = require('amqplib/callback_api');
+const request = require('request');
 /*
  FIREWALL MUST BE OPEN SERVER TO ACCEPT INCOMING CONNECTION REQUESTS
 
@@ -21,8 +26,8 @@ function start() {
     Logger.info('[AMQP] Attempting to connect to:', `${rabbitMQ.userName}:${rabbitMQ.password}@${rabbitMQ.hostName}`);
     amqp.connect(`amqp://${rabbitMQ.userName}:${rabbitMQ.password}@${rabbitMQ.hostName}` + '?heartbeat=60', function(err, conn) {
         if (err) {
-            Logger.error("[AMQP]", err.message);;;;;
-            return setTimeout(start, 1000)
+          Logger.error("[AMQP]", err.message);
+          return setTimeout(start, 1000)
         }
 
         conn.on("error", function(err) {
@@ -155,8 +160,8 @@ const self = module.exports = {
     checkQueueOnConsole: function(queue, cb) {
         request(`http://${rabbitMQ.userName}:${rabbitMQ.password}@${rabbitMQ.hostName}:15672/api/queues/%2f/` + queue, function (err, resp, body) {
             if (err) {
-                Logger.error("[CHECK]  Error", err);;;;;
-                cb(err);
+              Logger.error("[CHECK]  Error", err);
+              cb(err);
             }
 
             const tmp = JSON.parse(body);
@@ -164,4 +169,5 @@ const self = module.exports = {
 
         })
     },
-};;;;;
+};
+

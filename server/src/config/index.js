@@ -1,4 +1,11 @@
-const { Logger } = require('../app/utils/index');
+/*
+ * Copyright (c) 2017, Feedeo AB <hugo@feedeo.io>.
+ *
+ * This source code is licensed under the license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+const { Logger } = require('../utils');
 
 module.exports = (function (env) {
     let config;
