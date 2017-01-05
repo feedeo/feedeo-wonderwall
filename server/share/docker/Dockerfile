@@ -23,7 +23,6 @@ COPY share/newrelic/newrelic.js /opt/wonderwall
 
 # Bundle app source
 COPY src /opt/wonderwall/src
-COPY share /opt/wonderwall/share
 
 EXPOSE 3000
 CMD [ "npm", "start" ]
