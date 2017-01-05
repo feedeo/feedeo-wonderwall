@@ -7,7 +7,7 @@
 
 const RABBITMQ_QUEUE = process.env.RABBITMQ_QUEUE
 
-const amqp = require('../utils/amqpUtil');
+const amqp = require('../utils/amqputil');
 const { Logger } = require('../utils');
 
 //Connect to RabbitMQ
