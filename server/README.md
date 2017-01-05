@@ -12,8 +12,22 @@ cd feedeo-wonderwall/server && \
 npm install
 ```
 
-### Available environment variables
+### Develop
 
+#### Local developing and testing
+
+```
+npm start
+```
+
+Server calls should be made like:
+```
+http://localhost:2495/query/<query string>
+```
+
+### Configure
+
+#### Environment variables
 ```
 FEEDEO_PORT
 FEEDEO_ENVIRONMENT
@@ -24,20 +38,6 @@ RABBITMQ_QUEUE
 ROLLBAR_API_KEY
 GOOGLE_IMAGES_ID
 GOOGLE_IMAGES_API_KEY
-```
-
-#### Start server
-Note: Default port 2495
-
-```
-npm start
-```
-
-### Server calls
-
-Call to get images for a search term
-```
-http://<server>:3000/query/<query string>
 ```
 
 ### Deploy
