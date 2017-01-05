@@ -5,6 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const ID = process.env.GOOGLE_IMAGES_ID
+const API_KEY = process.env.GOOGLE_IMAGES_API_KEY
+
 const express = require('express');
 const router = express.Router();
 const publisher = require('./publisher');
@@ -12,7 +15,6 @@ const amqp = require('../utils/amqputil');
 
 const ImagesClient = require('google-images');
 const {Logger} = require('../utils');
-const { cx } = require('../config');
 
 router.use(function (req, res, next) {
   Logger.info(req.method, req.url);
@@ -28,7 +30,7 @@ router.get('/query/:q', (req, res) => {
 
   const query = req.params.q;
 
-  let client = new ImagesClient(cx.cx_id, cx.cx_api);
+  let client = new ImagesClient(ID, API_KEY);
 
   client.search(query, { size: 'large' })
     .then((images) => {

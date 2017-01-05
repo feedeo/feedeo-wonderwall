@@ -5,28 +5,28 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const RABBITMQ_QUEUE = process.env.RABBITMQ_QUEUE
+
 const amqp = require('../utils/amqpUtil');
 const { Logger } = require('../utils');
-const { rabbitMQ } = require('../config');
-
 
 //Connect to RabbitMQ
 
 module.exports = {
 
-    publish: function (message) {
-        const payload = JSON.stringify(message);
-        Logger.info("Publish message", message);
-        amqp.publish("", rabbitMQ.queueName, new Buffer(payload, 'utf8'));
-    },
+  publish: function (message) {
+    const payload = JSON.stringify(message);
+    Logger.info("Publish message", message);
+    amqp.publish("", RABBITMQ_QUEUE, new Buffer(payload, 'utf8'));
+  },
 
-    purgeQueue: function (cb) {
-        amqp.purgeQueue(rabbitMQ.queueName, cb);
-    },
+  purgeQueue: function (cb) {
+    amqp.purgeQueue(RABBITMQ_QUEUE, cb);
+  },
 
-    countQueue: function (cb) {
-        amqp.countQueue(rabbitMQ.queueName, cb);
-    }
+  countQueue: function (cb) {
+    amqp.countQueue(RABBITMQ_QUEUE, cb);
+  }
 
 };
 

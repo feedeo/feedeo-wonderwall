@@ -10,7 +10,7 @@ const VERSION = process.env.FEEDEO_VERSION;
 const VERSION_COMMIT = process.env.FEEDEO_VERSION_COMMIT;
 const LOG_LEVEL = process.env.FEEDEO_LOG_LEVEL || 'info';
 
-const ROLLBAR_TOKEN = 'cc3c0b5cedee485ea89f8d36cdf7c76d';
+const API_KEY = process.env.ROLLBAR_API_KEY;
 
 const util = require('util');
 
@@ -35,7 +35,7 @@ switch (ENVIRONMENT) {
 	case 'production':
 
     const rollbar = require('rollbar');
-    rollbar.init(ROLLBAR_TOKEN, {
+    rollbar.init(API_KEY, {
 			environment: ENVIRONMENT,
 			branch: VERSION,
 			codeVersion: VERSION_COMMIT
