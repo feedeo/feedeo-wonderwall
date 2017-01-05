@@ -20,9 +20,25 @@ npm install
 npm start
 ```
 
-Server calls should be made like:
+Verify that it is running:
 ```
-http://localhost:2495/query/<query string>
+curl https://wonderwall.feedeo.io/query/hugo
+```
+```
+[
+   {
+      "type":"image/png",
+      "width":500,
+      "height":500,
+      "size":21150,
+      "url":"http://blog.sqlauthority.com/i/a/errorstop.png",
+      "thumbnail":{
+         "url":"https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQAH6xtOwka5RLOCEvnoT46TTbdr260WaqozdO9CJRDy6OXsjShORe41s6M",
+         "width":130,
+         "height":130
+      }
+   }
+]
 ```
 
 ### Configure
