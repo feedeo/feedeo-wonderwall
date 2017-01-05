@@ -6,6 +6,6 @@
  */
 
 module.exports = {
-	Logger: require('./logger')
+  Logger: require('./Logger')
 
 }
