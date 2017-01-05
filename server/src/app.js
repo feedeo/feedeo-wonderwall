@@ -6,6 +6,7 @@
  */
 
 const ENVIRONMENT = process.env.FEEDEO_ENVIRONMENT
+const PORT = process.env.FEEDEO_PORT || '2495'
 
 if (ENVIRONMENT === 'production') {
   require('newrelic')
@@ -24,7 +25,7 @@ const { Logger } = require('../src/utils');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '2495');
+var port = normalizePort(PORT);
 app.set('port', port);
 
 /**
